@@ -84,13 +84,15 @@ namespace VolumeControls
             if (nCode >= 0)
             {
                 Keys currentKey = (Keys)Marshal.ReadInt32(lParam);
+                if (currentKey == Keys.RControlKey)
+                    isRightCtrlPressed = wParam == (IntPtr)Hooks.WM_KEYDOWN && wParam != (IntPtr)Hooks.WM_KEYUP;
+
                 bool executed = 
                     OnKeyComboPressed(currentKey, Keys.F10, wParam, TAP_THRESHOLD_MS, delegate { Hooks.keybd_event((byte)Keys.VolumeDown, 0, 0, 0); }) ||
                     OnKeyComboPressed(currentKey, Keys.F11, wParam, TAP_THRESHOLD_MS, delegate { Hooks.keybd_event((byte)Keys.VolumeUp, 0, 0, 0); }) ||
                     OnKeyComboPressed(currentKey, Keys.F9, wParam, TAP_THRESHOLD_MS, delegate { Hooks.keybd_event((byte)Keys.VolumeMute, 0, 0, 0); })|| 
                     OnKeyComboPressed(currentKey, Keys.F6, wParam, TAP_THRESHOLD_MS, delegate { Hooks.keybd_event((byte)Keys.MediaPlayPause, 0, 0, 0); });
-                if (currentKey == Keys.RControlKey)
-                    isRightCtrlPressed = wParam == (IntPtr)Hooks.WM_KEYDOWN && wParam != (IntPtr)Hooks.WM_KEYUP;
+                
                 if (executed)
                     return (IntPtr)1;
             }
